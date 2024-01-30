@@ -3,6 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"regexp"
+)
+
+var (
+	// Capture everything between the backticks denoting the struct tag
+	StructTagPattern = regexp.MustCompile("\x60([a-zA-Z0-9: -,\"]+)\x60")
 )
 
 type Args struct {
@@ -25,5 +31,9 @@ func ProcessArgs() *Args {
 func main() {
 	args := ProcessArgs()
 
-	fmt.Printf(*args.Buf)
+	matches := StructTagPattern.FindStringSubmatch(*args.Buf)
+	if matches != nil {
+		fmt.Println(matches[1])
+	}
+
 }
